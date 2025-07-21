@@ -5,22 +5,22 @@ Fortunately, IMGT provides C gene sequences for all these species. Unfortunately
 
 ## I. Acquire IMGT C genes & Genomes
 ### A. Use NCBI Datasets tool to download genome FASTAs: https://www.ncbi.nlm.nih.gov/datasets/docs/v2/reference-docs/command-line/datasets/
-- Mustel putorius furo
+- Mustel putorius furo (domestic ferret)
     - `datasets download genome accession GCF_011764305.1 --include genome`
     - (assembly details: https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_011764305.1/)
-- Canis lupus familiaris
+- Canis lupus familiaris (dog)
     - `datasets download genome accession GCF_000002285.5 --include genome`
     - (assembly details: https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000002285.5/)
-- Homo sapiens
+- Homo sapiens (human)
     - `datasets download genome accession GCF_000001405.40 --include genome`
     - (assembly details: https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001405.40/
-- Neogale vison
+- Neogale vison (mink)
     - `datasets download genome accession GCF_020171115.1 --include genome`
     - (assembly details: https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_020171115.1/)
 ### B. Use IMGT's gene DB download tool to get previously-annotated entire genomic C gene sequences
 - https://www.imgt.org/genedb/
 - after narrowing selection by species, gene type C genes, immunoglobulin heavy chain, etc., select nucleotide FASTA output, "C-GENE" download option to get the full genomic C gene locus incuding exons & introns
-- For dog IGHG1, IGHG3, and IGHG4, the "C-GENE" is not downloadable via IMGT. It appears these three genes have not been mapped within the immunoglobulin locus in the dog genome assembly, and instead their exons actually map best to a curated mRNA database. Therefore, I have used IGHG2's top 4 hits, hoping to catch the three IGHG paralogs in the dog genome assembly.
+- For dog IGHG1, IGHG3, and IGHG4, the "C-GENE" is not downloadable via IMGT. It appears these three genes have not been mapped within the immunoglobulin locus in the dog genome assembly, and instead their exons actually map best to a curated mRNA database. Therefore, I have used IGHG2's top 4 hits, hoping to catch the three IGHG paralogs in the dog genome assembly. See the '--dog' option in the besthits_perquery.py.
 
 ## II. Run scripts in this order to create C gene exon map
 ### A. Per Species
