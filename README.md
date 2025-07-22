@@ -1,5 +1,5 @@
 # Rationale
-This repository records the steps taken & tools used to generate a map of the immunoglobulin C (constant) gene loci among four species. This map helps depict what might have been a gene deletion event in an ancestor of the ferret and mink that is not an ancestor of the dog or human.
+This repository records the steps taken & tools used to generate a map of the immunoglobulin C (constant) gene loci among multiple species. I used it to compare ferret IGHG genes specifically to related carnivores and to humans, as ferrets appear to only have two IGHG genes whereas humans have four. However, this code can be generalized for any species' genome assembly in which either IMGT C-GENE annotations exist or a determined researcher has their own proposed C-GENE genomic sequences to visualize.
 
 Fortunately, IMGT provides C gene sequences for all these species. Unfortunately, their sequence record descriptions include start & stop positions that cannot trivially be mapped back to an organism's genome. Therefore, some other mapping tool must be employed to re-annotate their location within a genome. This repository uses a BLAST wrapper.
 
