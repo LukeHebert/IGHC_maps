@@ -1,0 +1,2 @@
+## List of to-do's
+1. Just rerun all scripts with the provided human, dog, mink, and ferret IMGT C gene sequences on this repo. I didn't have enough time to rerun everything after fixing the `keep_one_allele.py` script. The current PNG/map depicts tiny human genes because the original `keep_one_allele.py` script didn't filter out partial C-GENE sequences, as it now does.
