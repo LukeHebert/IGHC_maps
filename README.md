@@ -24,10 +24,10 @@ Fortunately, IMGT provides C gene sequences for all these species. Unfortunately
 
 ## II. Run scripts in this order to create C gene exon map
 ### A. Per Species
-1. keep_one_allele.py
-2. download [makeblastdb](https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/) or use [conda install](https://anaconda.org/bioconda/blast) and run `makeblastdb -in species_genome.fasta -parse_seqids -dbtype nucl`
-3. cgenes_BLASTn_genome.py
-4. besthits_perquery.py
+1. Run `keep_one_allele.py` on the IMGT C-GENE sequences FASTA
+2. Download [makeblastdb](https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/) or use [conda install](https://anaconda.org/bioconda/blast) and run `makeblastdb -in species_genome.fasta -parse_seqids -dbtype nucl`
+3. Query the IMGT C-GENE sequences against their respective genome (formatted as a BLAST database in the previous step) by running `cgenes_BLASTn_genome.py`
+4. Keep only the top BLAST hit for each query by running `besthits_perquery.py` (for dog, use the `--dog` flag; this returns the top *four* hits from the IGHG2 query because IGHG2 is the only annotated gamma gene in their genome assembly for some reason)
 ### B. Now using all Species Data
-5. combine_hits.py
-6. cgene_map.py
+5. Combine the filtered BLASTn hits from all species with a command like `cat allhits_ferret_best.tsv <(tail -n +2 allhits_dog_best.tsv) <(tail -n +2 allhits_human_best.tsv) <(tail -n +2 allhits_mink_best.tsv) > allhits_allspecies_best.tsv`
+6. Generate the interspecies IGHC gene map by running `cgene_map.py` on the filtered, combined hits.
