@@ -3,6 +3,11 @@ This repository records the steps taken & tools used to generate a map of the im
 
 Fortunately, IMGT provides C gene sequences for all these species. Unfortunately, their sequence record descriptions include start & stop positions that cannot trivially be mapped back to an organism's genome. Therefore, some other mapping tool must be employed to re-annotate their location within a genome. This repository uses a BLAST wrapper.
 
+### Example map:
+![Map comparing human, dog, mink, and ferret C genes. Needs to be updated to fix the small human genes; scripts already fixed & waiting to be run.](allhits_allspecies_best_locus_map.png)
+
+
+# Steps to Generate Interspecies C-Gene Map
 ## I. Acquire IMGT C genes & Genomes
 ### A. Use NCBI Datasets tool to download genome FASTAs: https://www.ncbi.nlm.nih.gov/datasets/docs/v2/reference-docs/command-line/datasets/
 - Mustel putorius furo (domestic ferret)
