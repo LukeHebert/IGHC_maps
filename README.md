@@ -1,7 +1,13 @@
-# Rationale
-This repository records the steps taken & tools used to generate a map of the immunoglobulin C (constant) gene loci among multiple species. I used it to compare ferret IGHG genes specifically to related carnivores and to humans, as ferrets appear to only have two IGHG genes whereas humans have four. However, this code can be generalized for any species' genome assembly in which either IMGT C-GENE annotations exist or a determined researcher has their own proposed C-GENE genomic sequences to visualize.
+# Interspecies IGHC Gene Maps
+This repository shows you how to generate a map of the immunoglobulin C (constant) aka "IGHC" gene loci among multiple species. This is not a tool to *discover* IGHC genes, but to visualize and compare them across species.
 
-Fortunately, IMGT provides C gene sequences for many species. Unfortunately, their sequence record descriptions include start & stop positions that cannot trivially be mapped back to an organism's genome. Therefore, some other mapping tool must be employed to re-annotate their location within a genome. This repository uses a BLAST wrapper.
+The need for this workflow comes from this: Fortunately, IMGT provides C gene sequences for many species. Unfortunately, IMGT's C gene descriptions include start & stop positions that cannot easily be mapped back to an organism's genome (from which most of the IMGT sequences are derived). Therefore, to visualize these genes in the larger context of a genomic scaffold or chromosome, some other mapping tool must be employed to re-annotate the C genes' location within said genome. This repository uses a BLAST wrapper to accomplish this re-annotation.
+
+This workflow can be generalized for any species. The components you will need are:
+- a high quality genome assembly
+- IMGT "C-GENE" annotations (or your own proposed C-GENE genomic sequences to visualize)
+
+I used it to compare the domestic ferret gamma ("IGHG") genes to the closely related American mink and to humans. Why? Ferrets appear to only have two IGHG genes whereas humans have four, and ferrets are often used to model antibody responses to e.g. influenza A. Thorough knowledge of ferret antibody genes helps us interpret ferret disease models. This visualization helps show differences in human vs mustelid IGHC locus layout, including a duplication of human gamma, epsilon, and alpha genes that does not appear in mustelids.
 
 ### Example map:
 ![Map comparing human, dog, mink, and ferret C genes. Needs to be updated to fix the small human genes; scripts already fixed & waiting to be run.](allhits_allspecies_best_locus_map.png)

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Generate gene locus maps from BLAST hit TSVs of immunoglobulin C gene loci across species.
-Reads a TSV of BLAST hits, extracts species and gene labels from qseqid, selects the most-hit scaffold per species,
-orienting each species so IGHM is on the left, normalizes lengths to the longest scaffold, and color‐codes gene families.
+Reads one or more TSVs of BLAST hits, extracts species and gene labels from qseqid, selects the most-hit scaffold per species,
+orienting each species so IGHM (or fallback to IGHD) is on the left if present, normalizes lengths to the longest scaffold, and color‐codes gene families.
 Creates one subplot per species (ordered Homo, Canis, Neogale, Mustela), labels scaffold coordinate ends, labels each subplot with species and scaffold name,
 places vertical gene labels directly atop each gene, and saves a high‐resolution PNG output.
 """
@@ -27,13 +27,17 @@ warnings.filterwarnings(
 
 def parse_args():
     """Parse command-line arguments."""
-    parser = argparse.ArgumentParser(description="Plot immunoglobulin C locus maps from BLAST TSV.")
-    parser.add_argument("tsv", help="Input TSV file of BLAST hits")
+    parser = argparse.ArgumentParser(description="Plot immunoglobulin C locus maps from one or more BLAST TSVs.")
+    parser.add_argument(
+        "tsvs",
+        nargs='+',
+        help="Input TSV file(s) of BLAST hits"
+    )
     return parser.parse_args()
 
 
-def load_data(tsv_path):
-    """Load BLAST hit data from TSV into a DataFrame."""
+def load_data(tsv_path):  # noqa: E501
+    """Load a BLAST hit TSV into a DataFrame."""
     return pd.read_csv(tsv_path, sep="\t", dtype={"qseqid": str})
 
 
@@ -61,7 +65,7 @@ def select_scaffold(df):
 
 
 def orient_and_normalize(selected):
-    """Orient each species so IGHM is on the left and compute relative positions."""
+    """Orient each species so IGHM or IGHD is on the left (if present) and compute relative positions."""
     oriented = {}
     for sp, df in selected.items():
         Smin = df.attrs["scaffold_min"]
@@ -69,15 +73,22 @@ def orient_and_normalize(selected):
         L = Smax - Smin
         df["rel_start"] = df["start_abs"] - Smin
         df["rel_end"]   = df["end_abs"]   - Smin
-        igm = df[df["gene"] == "IGHM"]
-        if igm.empty:
-            raise ValueError(f"Species {sp} missing IGHM hit")
-        igm_center = (igm["rel_start"].iloc[0] + igm["rel_end"].iloc[0]) / 2
-        if igm_center > L / 2:
-            df["rel_start"], df["rel_end"] = (
-                L - df["rel_end"],
-                L - df["rel_start"]
-            )
+        # choose orientation gene: IGHM preferred, then IGHD
+        orient_gene = None
+        if (df["gene"] == "IGHM").any():
+            orient_gene = "IGHM"
+        elif (df["gene"] == "IGHD").any():
+            orient_gene = "IGHD"
+        # if orientation gene available, flip if needed
+        if orient_gene:
+            hit = df[df["gene"] == orient_gene].iloc[0]
+            center = (hit["rel_start"] + hit["rel_end"]) / 2
+            if center > L / 2:
+                df["rel_start"], df["rel_end"] = (
+                    L - df["rel_end"],
+                    L - df["rel_start"]
+                )
+        # assign for plotting
         df["plot_start"] = df["rel_start"]
         df["plot_end"]   = df["rel_end"]
         df.attrs["length"] = L
@@ -112,7 +123,6 @@ def assign_colors(oriented):
 
 def plot_loci(oriented, output_path):
     """Plot one horizontal locus map per species with titles, vertical gene labels, and save to PNG."""
-    # enforce desired species order
     desired = ["Homo", "Canis", "Neogale", "Mustela"]
     species = [sp for sp in desired if sp in oriented] + [sp for sp in oriented if sp not in desired]
     n = len(species)
@@ -156,12 +166,16 @@ def plot_loci(oriented, output_path):
 def main():
     """Orchestrate loading, processing, plotting, and saving of gene locus maps."""
     args = parse_args()
-    df = load_data(args.tsv)
+    df_list = [load_data(tsv) for tsv in args.tsvs]
+    df = pd.concat(df_list, ignore_index=True)
     df = extract_metadata(df)
     selected = select_scaffold(df)
     oriented = orient_and_normalize(selected)
     colored = assign_colors(oriented)
-    base, _ = os.path.splitext(args.tsv)
+    if len(args.tsvs) == 1:
+        base = os.path.splitext(args.tsvs[0])[0]
+    else:
+        base = os.path.commonprefix([os.path.basename(tsv) for tsv in args.tsvs]).rstrip("_-") or "combined"
     output_file = f"{base}_locus_map.png"
     plot_loci(colored, output_file)
     print(f"Saved locus map to {output_file}")
